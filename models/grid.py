@@ -48,6 +48,12 @@ class Grid:
         return self.cells[row][col] == CellState.EMPTY
 
     def _is_cell_free_for_ship(self, row, col):
+        """
+        Проверяет квадрат 3х3 на то, что
+        можно ли поставить туда корабль?
+        (не будет ли пересечений с
+        другими кораблями?)
+        """
         if not self._is_valid_coord(row, col):
             return False
 
@@ -87,6 +93,7 @@ class Grid:
         return True
 
     def __mark_destroyed_ship(self, coords):
+        """Пометить клетки корабля, как уничтоженные"""
         for coord in coords:
             self._set_cell(coord[0], coord[1], CellState.DESTROY)
 
@@ -141,4 +148,5 @@ class Grid:
         return ShotResult.ALREADY_SHOT
 
     def is_game_not_over(self):
+        """Проверяет на конец игры"""
         return self.destroyed_count < len(self.ships)
