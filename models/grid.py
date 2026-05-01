@@ -133,6 +133,7 @@ class Grid:
         current = self._get_cell(row, col)
 
         if current == CellState.EMPTY:
+            self._set_cell(row, col, CellState.MISS)
             return ShotResult.MISS
         elif current == CellState.SHIP:
             self._set_cell(row, col, CellState.HIT)
@@ -142,8 +143,6 @@ class Grid:
                 self.destroyed_count += 1
                 return ShotResult.DESTROYED
             return ShotResult.HIT
-        elif current in [CellState.DESTROY, CellState.HIT, CellState.MISS]:
-            return ShotResult.ALREADY_SHOT
 
         return ShotResult.ALREADY_SHOT
 
