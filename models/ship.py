@@ -6,9 +6,9 @@ class Ship:
         self.start_row, self.start_col = start_coord
         self.orientation = orientation
         self.hits_count = 0
-        self.is_sunk = False
         self.coords = self.get_coords()
 
+    @property
     def get_coords(self):
         """Получить координаты всех занимаемых клеток корабля"""
         coords = []
@@ -22,14 +22,13 @@ class Ship:
 
         return coords
 
+    @property
+    def get_is_sunk(self):
+        return self.hits_count >= self.size
+
     def is_contain_coord(self, row, col):
         """Проверяет попадание"""
         return (row, col) in self.coords
 
     def add_hit(self):
         self.hits_count += 1
-        if self.hits_count == self.size:
-            self.is_sunk = True
-
-    def get_is_sunk(self):
-        return self.is_sunk
