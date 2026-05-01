@@ -5,6 +5,7 @@ class Ship:
         self.size = size
         self.start_row, self.start_col = start_coord
         self.orientation = orientation
+        self.hits_count = 0
         self.is_sunk = False
         self.coords = self.get_coords()
 
@@ -21,10 +22,14 @@ class Ship:
 
         return coords
 
-    def is_alive(self):
-        """Проверяет живучесть"""
-        return not self.is_sunk
-
     def is_contain_coord(self, row, col):
         """Проверяет попадание"""
         return (row, col) in self.coords
+
+    def add_hit(self):
+        self.hits_count += 1
+        if self.hits_count == self.size:
+            self.is_sunk = True
+
+    def get_is_sunk(self):
+        return self.is_sunk
