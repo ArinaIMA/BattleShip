@@ -10,7 +10,7 @@ class Ship:
         self.__set_coords()
 
     def __set_coords(self):
-        """Получить координаты всех занимаемых клеток корабля"""
+        """Устновить координаты всех занимаемых клеток корабля"""
         row, col = self._start_row, self._start_col
 
         for i in range(self._size):
@@ -20,9 +20,11 @@ class Ship:
                 self._coords.append((row + i, col))
 
     def get_coords(self):
+        """Вернуть координаты всех клеток корабля"""
         return self._coords
 
     def get_is_sunk(self):
+        """Проверка: потанул ли корабль?"""
         return self._hits_count >= self._size
 
     def is_contain_coord(self, row, col):
@@ -30,4 +32,5 @@ class Ship:
         return (row, col) in self._coords
 
     def add_hit(self):
+        """Отметить попадание в корабль"""
         self._hits_count += 1
