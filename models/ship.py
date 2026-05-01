@@ -15,9 +15,9 @@ class Ship:
 
         for i in range(self.size):
             if self.orientation == "horizontal":
-                coords.append((row, col + 1))
+                coords.append((row, col + i))
             else:
-                coords.append((row + 1, col))
+                coords.append((row + i, col))
 
         return coords
 
