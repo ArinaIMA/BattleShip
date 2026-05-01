@@ -2,33 +2,32 @@ class Ship:
     """Класс корабля"""
     def __init__(self, size, start_coord, orientation):
         """Инициализация"""
-        self.size = size
-        self.start_row, self.start_col = start_coord
-        self.orientation = orientation
-        self.hits_count = 0
-        self.coords = self.get_coords()
+        self._size = size
+        self._start_row, self._start_col = start_coord
+        self._orientation = orientation
+        self._hits_count = 0
+        self._coords = []
+        self.__set_coords()
 
-    @property
-    def get_coords(self):
+    def __set_coords(self):
         """Получить координаты всех занимаемых клеток корабля"""
-        coords = []
-        row, col = self.start_row, self.start_col
+        row, col = self._start_row, self._start_col
 
-        for i in range(self.size):
-            if self.orientation == "horizontal":
-                coords.append((row, col + i))
+        for i in range(self._size):
+            if self._orientation == "horizontal":
+                self._coords.append((row, col + i))
             else:
-                coords.append((row + i, col))
+                self._coords.append((row + i, col))
 
-        return coords
+    def get_coords(self):
+        return self._coords
 
-    @property
     def get_is_sunk(self):
-        return self.hits_count >= self.size
+        return self._hits_count >= self._size
 
     def is_contain_coord(self, row, col):
         """Проверяет попадание"""
-        return (row, col) in self.coords
+        return (row, col) in self._coords
 
     def add_hit(self):
-        self.hits_count += 1
+        self._hits_count += 1
