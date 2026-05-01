@@ -6,9 +6,9 @@ class Ship:
         self.start_row, self.start_col = start_coord
         self.orientation = orientation
         self.is_sunk = False
-        self.coords = self._get_coords()
+        self.coords = self.get_coords()
 
-    def _get_coords(self):
+    def get_coords(self):
         """Получить координаты всех занимаемых клеток корабля"""
         coords = []
         row, col = self.start_row, self.start_col
