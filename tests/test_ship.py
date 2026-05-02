@@ -53,7 +53,7 @@ class TestShip:
         """Корабль не уничтожен"""
         ship = Ship(3, (0, 0), "horizontal")
 
-        assert ship.get_is_sunk() is False
+        assert ship.is_sunk() is False
 
     def test_get_is_sunk_true(self):
         """Корабль уничтожен после достаточного количества попаданий"""
@@ -63,7 +63,7 @@ class TestShip:
         ship.add_hit()
         ship.add_hit()
 
-        assert ship.get_is_sunk() is True
+        assert ship.is_sunk() is True
 
     def test_add_hit_increments(self):
         """Проверка увеличения счетчика попаданий"""
@@ -80,8 +80,8 @@ class TestShip:
         ship = Ship(1, (0, 0), "horizontal")
 
         ship.add_hit()
-        assert ship.get_is_sunk() is True
+        assert ship.is_sunk() is True
 
         ship.add_hit()  # Лишнее попадание
         assert ship._hits_count == 2
-        assert ship.get_is_sunk() is True
+        assert ship.is_sunk() is True

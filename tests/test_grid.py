@@ -121,7 +121,7 @@ class TestShots:
         assert result == ShotResult.DESTROYED
         assert grid.cells[3][3] == CellState.DESTROY
         assert grid.destroyed_count == 1
-        assert grid.ships[0].get_is_sunk() is True
+        assert grid.ships[0].is_sunk() is True
 
     def test_shot_destroyed_multi_deck(self):
         grid = Grid()

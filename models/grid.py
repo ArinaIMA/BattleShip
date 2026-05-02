@@ -100,9 +100,9 @@ class Grid:
     def __is_ship_destroyed(self, row, col):
         """Обрабатывает попадание"""
         ship = self.cell_to_ship[(row, col)]
-        if ship.get_is_sunk():
+        if ship.is_sunk():
             self.__mark_destroyed_ship(ship.get_coords())
-        return ship.get_is_sunk()
+        return ship.is_sunk()
 
     def place_ship(self, row, col, size, orientation):
         """Размещает корабль, если возможно"""
