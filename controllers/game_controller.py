@@ -38,6 +38,14 @@ class GameController:
         self._place_ships()
 
         # Переход к экрану игры
+        if not self.is_with_ai:
+            self.is_waiting_for_turn_end = True
+            self.main_window.show_handoff_screen(
+                next_player_name=self.game.current_player.name,
+                on_ready=self._on_handoff_ready,
+            )
+            return
+
         self._refresh_game_screen()
 
     def _place_ships(self):
@@ -82,11 +90,25 @@ class GameController:
             self.is_waiting_for_turn_end = False
             return
 
-        self._refresh_game_screen() # нужно, чтобы второй игрок теперь видел свое поле
+        turn_switched = (outcome["result"] == ShotResult.MISS)
+
+        if not self.is_with_ai and turn_switched:
+            self.is_waiting_for_turn_end = True
+            self.main_window.show_handoff_screen(
+                next_player_name=self.game.current_player.name,
+                on_ready=self._on_handoff_ready,
+            )
+            return
+
+        self._refresh_game_screen()
         self.is_waiting_for_turn_end = False
 
         if self.is_with_ai and self.game.current_player.name == "Компьютер":
             self._ai_turn()
+
+    def _on_handoff_ready(self):
+        self._refresh_game_screen()
+        self.is_waiting_for_turn_end = False
 
     def _ai_turn(self):
         if self.game is None or self.game.is_over:
@@ -112,7 +134,6 @@ class GameController:
 
         self._refresh_game_screen()
         self.main_window.root.after(300, self._ai_make_one_shot)
-
 
     def on_exit(self):
         """Обработчик закрытия приложения"""

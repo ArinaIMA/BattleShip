@@ -122,27 +122,58 @@ class MainWindow:
         self.clear_content()
 
         # Заголовок с именами
-        title = tk.Label(self.content_frame,
-                         text=f"{own_name}  vs  {enemy_name}",
-                         font=("Arial", 16, "bold"), bg=BACKGROUND_COLOR)
+        title = tk.Label(
+            self.content_frame,
+            text=f"{own_name}  vs  {enemy_name}",
+            font=("Arial", 16, "bold"),
+            bg=BACKGROUND_COLOR
+        )
         title.pack(pady=10)
 
         # Контейнер с двумя полями
-        boards = tk.Frame(self.content_frame, bg=BACKGROUND_COLOR)
+        boards = tk.Frame(
+            self.content_frame,
+            bg=BACKGROUND_COLOR
+        )
         boards.pack(expand=True)
 
         # Своё поле (корабли видны, клик не нужен)
-        self.own_board = BoardView(boards, own_grid, mode="own",
-                                   on_cell_click=None, bg=BACKGROUND_COLOR)
+        self.own_board = BoardView(
+            boards, own_grid,
+            mode="own",
+            on_cell_click=None,
+            bg=BACKGROUND_COLOR
+        )
         self.own_board.pack(side="left", padx=20)
 
         # Поле противника (корабли скрыты, клик = выстрел)
         self.enemy_board = BoardView(
-            boards, enemy_grid, mode="enemy",
+            boards, enemy_grid,
+            mode="enemy",
             on_cell_click=self.controller.on_cell_click,
             bg=BACKGROUND_COLOR,
         )
         self.enemy_board.pack(side="left", padx=20)
+
+    def show_handoff_screen(self, next_player_name, on_ready):
+        """
+        Экран «передайте устройство».
+        on_ready — callback, вызывается по кнопке «Готов».
+        """
+        self.clear_content()
+
+        center = tk.Frame(
+            self.content_frame,
+            bg=BACKGROUND_COLOR)
+        center.place(relx=0.5, rely=0.5, anchor="center")
+
+        tk.Label(center, text="Передайте устройство",
+                 font=("Arial", 20, "bold"), bg=BACKGROUND_COLOR).pack(pady=20)
+        tk.Label(center, text=f"Ходит: {next_player_name}",
+                 font=("Arial", 16), bg=BACKGROUND_COLOR).pack(pady=10)
+        tk.Button(center, text="Готов",
+                  command=on_ready,
+                  font=("Arial", 12), width=20).pack(pady=20)
 
     def show_game_over(self, winner_name):
         """Экран победы. winner_name — имя победителя."""
