@@ -21,3 +21,8 @@ class Game:
         """Расставляет корабли обоим игрокам"""
         self.player1.place_ships_random(self.ships_config)
         self.player2.place_ships_random(self.ships_config)
+
+    def make_shot(self, row, col):
+        return self.current_player.make_shot(row, col)
+
+

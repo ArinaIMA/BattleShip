@@ -1,5 +1,6 @@
 from models.player import HumanPlayer, AIPlayer
 from models.game import Game
+from models.grid import ShotResult
 
 class GameController:
     def __init__(self):
@@ -51,7 +52,10 @@ class GameController:
             is_my_turn=True,
         )
 
-    def on_cell_click(self):
+    def on_cell_click(self, row, col):
+        result = self.game.make_shot(row, col) # выстрел без передачи хода
+        if result != ShotResult.ALREADY_SHOT:
+            self._refresh_game_screen()
         pass
 
     def on_exit(self):
