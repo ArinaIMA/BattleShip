@@ -3,11 +3,11 @@ from views.main_window import MainWindow
 
 
 def main():
-    # Создание контроллера
+    # Создание контроллера - отвечает за ход игры
     controller = GameController()
 
     # Создание окна с передачей контроллера
-    app = MainWindow(controller)
+    app = MainWindow(controller) # класс, отвечающий за отрисовку
     controller.set_main_window(app)
 
     # Запуск приложения

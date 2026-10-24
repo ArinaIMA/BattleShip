@@ -2,11 +2,11 @@ class Ship:
     """Класс корабля"""
     def __init__(self, size, start_coord, orientation):
         """Инициализация"""
-        self._size = size
-        self._start_row, self._start_col = start_coord
-        self._orientation = orientation
-        self._hits_count = 0
-        self._coords = []
+        self._size = size # размер - 1, ..., 4
+        self._start_row, self._start_col = start_coord # стартовая ячейка поля - верхняя левая
+        self._orientation = orientation # вниз или вправо
+        self._hits_count = 0 # счетчик попаданий
+        self._coords = [] # координаты всех ячеек, принадлежащих кораблю
         self.__set_coords()
 
     def __set_coords(self):
@@ -14,7 +14,7 @@ class Ship:
         row, col = self._start_row, self._start_col
 
         for i in range(self._size):
-            if self._orientation == "horizontal":
+            if self._orientation == "horizontal": # по направлению корабля добавляем новые координаты
                 self._coords.append((row, col + i))
             else:
                 self._coords.append((row + i, col))

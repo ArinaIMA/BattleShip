@@ -8,26 +8,44 @@ class MainWindow:
         self.root = tk.Tk()
 
         # Настройка окна
-        self.root.title(WINDOW_TITLE)
-        self.root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
-        self.root.configure(bg=BACKGROUND_COLOR)
+        self.root.title(WINDOW_TITLE) # название окна
+        self.root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}") # размеры окна
+        self.root.configure(bg=BACKGROUND_COLOR) # цвет фона
+
+        # Содержимое текущего окна
+        self.content_frame = tk.Frame(self.root, bg=BACKGROUND_COLOR)
+        self.content_frame.pack(fill="both", expand=True)
 
         # Создание интерфейса
-        self._create_widgets()
+        self.start_menu_widgets()
 
-    def _create_widgets(self):
-        # Заголовок
+    def start_menu_widgets(self):
+        # Контейнер по центру экрана
+        center = tk.Frame(self.content_frame, bg=BACKGROUND_COLOR)
+        center.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Заголовок - надпись
         title_label = tk.Label(
-            self.root,
+            center,
             text="Морской бой",
             font=("Arial", 24, "bold"),
             bg=BACKGROUND_COLOR
         )
         title_label.pack(pady=20)
 
+        # Кнопка начала игры
+        start_button = tk.Button(
+            center,
+            text="Новая игра",
+            command=self.controller.on_exit, # TODO
+            font=("Arial", 12),
+            width=20
+        )
+        start_button.pack(pady=10)
+
         # Кнопка выхода
         exit_button = tk.Button(
-            self.root,
+            center,
             text="Выход",
             command=self.controller.on_exit,
             font=("Arial", 12),
@@ -35,14 +53,19 @@ class MainWindow:
         )
         exit_button.pack(pady=10)
 
-        # Метка информации (пока заглушка)
+        # Метка информации
         self.info_label = tk.Label(
-            self.root,
+            center,
             text="Добро пожаловать в игру!",
             font=("Arial", 14),
             bg=BACKGROUND_COLOR
         )
         self.info_label.pack(pady=20)
+
+    def clear_content(self):
+        """Очищает текущий фрейм"""
+        for widget in self.content_frame.winfo_children():
+            widget.destroy()
 
     def update_info(self, message):
         """Обновление текста в информационной метке"""

@@ -50,7 +50,7 @@ class Grid:
     def _is_cell_free_for_ship(self, row, col):
         """
         Проверяет квадрат 3х3 на то, что
-        можно ли поставить туда корабль?
+        можно ли поставить в центр корабль?
         (не будет ли пересечений с
         другими кораблями?)
         """
@@ -139,7 +139,7 @@ class Grid:
             self._set_cell(row, col, CellState.HIT)
             ship = self.cell_to_ship[(row, col)]
             ship.add_hit()
-            if self.__is_ship_destroyed(row, col):
+            if self.__is_ship_destroyed(row, col): # проверка, что корабль уничтожен + пометка всех ячеек корабля как уничтоженные
                 self.destroyed_count += 1
                 return ShotResult.DESTROYED
             return ShotResult.HIT

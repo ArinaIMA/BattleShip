@@ -2,10 +2,19 @@ class GameController:
     def __init__(self):
         self.is_running = True
         self.main_window = None
+        self.is_with_ai = False
 
     def set_main_window(self, window):
         """Связываем контроллер с окном"""
         self.main_window = window
+
+    def start_new_game(self):
+        """
+        1. Создать 2х игроков (людей)
+        2.
+        :return:
+        """
+        pass
 
     def on_exit(self):
         """Обработчик закрытия приложения"""
