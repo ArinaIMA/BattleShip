@@ -7,7 +7,7 @@ class CellState(Enum):
     SHIP = 1
     HIT = 2
     MISS = 3
-    DESTROY = 4
+    DESTROYED = 4
 
 class ShotResult(Enum):
     """Состояние после выстрела"""
@@ -95,7 +95,7 @@ class Grid:
     def __mark_destroyed_ship(self, coords):
         """Пометить клетки корабля, как уничтоженные"""
         for coord in coords:
-            self._set_cell(coord[0], coord[1], CellState.DESTROY)
+            self._set_cell(coord[0], coord[1], CellState.DESTROYED)
 
     def __is_ship_destroyed(self, row, col):
         """Обрабатывает попадание"""

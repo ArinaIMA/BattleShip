@@ -127,7 +127,7 @@ class AIPlayer(Player):
                 if self.opponent_grid._is_valid_coord(n_row, n_col):
                     cell = self.opponent_grid._get_cell(n_row, n_col)
                     # Если клетка не обстреляна
-                    if cell not in [CellState.HIT, CellState.MISS, CellState.DESTROY]:
+                    if cell not in [CellState.HIT, CellState.MISS, CellState.DESTROYED]:
                         if (n_row, n_col) not in self.hunt_targets:
                             self.hunt_targets.append((n_row, n_col))
 

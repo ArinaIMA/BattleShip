@@ -1,5 +1,6 @@
 import tkinter as tk
 from config import WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, BACKGROUND_COLOR
+from views.board_view import BoardView
 
 
 class MainWindow:
@@ -88,7 +89,7 @@ class MainWindow:
         human_button = tk.Button(
             buttons_row,
             text="Human",
-            command=self.controller.on_exit,  # TODO
+            command=self.controller.start_game_vs_human,
             font=("Arial", 12),
             width=20
         )
@@ -98,7 +99,7 @@ class MainWindow:
         ai_button = tk.Button(
             buttons_row,
             text="Компьютер",
-            command=self.controller.on_exit,  # TODO
+            command=self.controller.start_game_vs_ai,
             font=("Arial", 12),
             width=20
         )
@@ -117,6 +118,31 @@ class MainWindow:
         )
         exit_button.pack(pady=20)
 
+    def show_game_screen(self, own_name, own_grid, enemy_name, enemy_grid, is_my_turn=True):
+        self.clear_content()
+
+        # Заголовок с именами
+        title = tk.Label(self.content_frame,
+                         text=f"{own_name}  vs  {enemy_name}",
+                         font=("Arial", 16, "bold"), bg=BACKGROUND_COLOR)
+        title.pack(pady=10)
+
+        # Контейнер с двумя полями
+        boards = tk.Frame(self.content_frame, bg=BACKGROUND_COLOR)
+        boards.pack(expand=True)
+
+        # Своё поле (корабли видны, клик не нужен)
+        self.own_board = BoardView(boards, own_grid, mode="own",
+                                   on_cell_click=None, bg=BACKGROUND_COLOR)
+        self.own_board.pack(side="left", padx=20)
+
+        # Поле противника (корабли скрыты, клик = выстрел)
+        self.enemy_board = BoardView(
+            boards, enemy_grid, mode="enemy",
+            on_cell_click=self.controller.on_cell_click,
+            bg=BACKGROUND_COLOR,
+        )
+        self.enemy_board.pack(side="left", padx=20)
 
     def clear_content(self):
         """Очищает текущий фрейм"""
