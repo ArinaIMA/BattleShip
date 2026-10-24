@@ -119,7 +119,7 @@ class TestShots:
         result = grid.receive_shot(3, 3)
 
         assert result == ShotResult.DESTROYED
-        assert grid.cells[3][3] == CellState.DESTROY
+        assert grid.cells[3][3] == CellState.DESTROYED
         assert grid.destroyed_count == 1
         assert grid.ships[0].is_sunk() is True
 
