@@ -20,6 +20,8 @@ class MainWindow:
         self.start_menu_widgets()
 
     def start_menu_widgets(self):
+        self.clear_content()
+
         # Контейнер по центру экрана
         center = tk.Frame(self.content_frame, bg=BACKGROUND_COLOR)
         center.place(relx=0.5, rely=0.5, anchor="center")
@@ -37,7 +39,7 @@ class MainWindow:
         start_button = tk.Button(
             center,
             text="Новая игра",
-            command=self.controller.on_exit, # TODO
+            command=self._choose_enemy,
             font=("Arial", 12),
             width=20
         )
@@ -61,6 +63,60 @@ class MainWindow:
             bg=BACKGROUND_COLOR
         )
         self.info_label.pack(pady=20)
+
+    def _choose_enemy(self):
+        self.clear_content()
+
+        # Контейнер по центру экрана
+        center = tk.Frame(self.content_frame, bg=BACKGROUND_COLOR)
+        center.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Заголовок - надпись
+        title_label = tk.Label(
+            center,
+            text="Выберите противника",
+            font=("Arial", 24, "bold"),
+            bg=BACKGROUND_COLOR
+        )
+        title_label.pack(pady=20)
+
+        # Горизонтальный контейнер для двух кнопок
+        buttons_row = tk.Frame(center, bg=BACKGROUND_COLOR)
+        buttons_row.pack(pady=30)
+
+        # Кнопка Игрок против Игрока
+        human_button = tk.Button(
+            buttons_row,
+            text="Human",
+            command=self.controller.on_exit,  # TODO
+            font=("Arial", 12),
+            width=20
+        )
+        human_button.pack(side="left", padx=10)
+
+        # Кнопка Игрок против Компьютера
+        ai_button = tk.Button(
+            buttons_row,
+            text="Компьютер",
+            command=self.controller.on_exit,  # TODO
+            font=("Arial", 12),
+            width=20
+        )
+        ai_button.pack(side="left", padx=10)
+
+        # Кнопка выхода
+        exit_button = tk.Button(
+            center,
+            text="Назад",
+            command=self.start_menu_widgets,
+            font=("Arial", 12),
+            width=20,
+            bg="lightgray",
+            fg="black",
+            activebackground="gray"
+        )
+        exit_button.pack(pady=20)
+
 
     def clear_content(self):
         """Очищает текущий фрейм"""
