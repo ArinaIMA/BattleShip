@@ -22,7 +22,47 @@ class Game:
         self.player1.place_ships_random(self.ships_config)
         self.player2.place_ships_random(self.ships_config)
 
-    def make_shot(self, row, col):
-        return self.current_player.make_shot(row, col)
+    def make_shot(self, row=None, col=None):
+        if self.is_over:
+            return None
 
+        shooter = self.current_player
+        target = self.opponent
 
+        if isinstance(shooter, AIPlayer):
+            result, row, col = shooter.make_shot()
+        else:
+            result = shooter.make_shot(row, col)
+
+        return {
+            "result": result,
+            "shooter": shooter,
+            "target": target,
+            "row": row,
+            "col": col,
+        }
+
+    def end_turn(self, outcome):
+        """Фиксирует последствия выстрела: смена хода, победа."""
+        result = outcome["result"]
+        if result in (ShotResult.ALREADY_SHOT, ShotResult.INVALID):
+            return
+        target = outcome["target"]
+
+        if target.has_lost():
+            self.is_over = True
+            self.winner = outcome["shooter"]
+            return
+
+        # Ход переходит только при промахе
+        if result == ShotResult.MISS:
+            self.switch_turn()
+
+    def switch_turn(self):
+        self.current_player = (
+            self.player2 if self.current_player is self.player1 else self.player1
+        )
+
+    @property
+    def opponent(self):
+        return self.player2 if self.current_player is self.player1 else self.player1

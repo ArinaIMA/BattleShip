@@ -1,4 +1,4 @@
-from models.player import HumanPlayer, AIPlayer
+from models.player import HumanPlayer, AIPlayer, Player
 from models.game import Game
 from models.grid import ShotResult
 
@@ -7,6 +7,8 @@ class GameController:
         self.is_running = True
         self.main_window = None
         self.is_with_ai = False
+        self.is_waiting_for_turn_end = False
+        self.is_waiting_for_ai = False
 
     def set_main_window(self, window):
         """Связываем контроллер с окном"""
@@ -42,21 +44,75 @@ class GameController:
         self.game.place_ships_randomly()
 
     def _refresh_game_screen(self):
-        current = self.game.current_player
-        opponent = self.game.player2 if current is self.game.player1 else self.game.player1
+        if self.is_with_ai:
+            self._show_game_screen(self.game.player1, self.game.player2)
+        else:
+            self._show_game_screen(self.game.current_player, self.game.opponent)
+
+    def _show_game_screen(self, current, opponent):
         self.main_window.show_game_screen(
             own_name=current.name,
             own_grid=current.grid,  # тут видны СВОИ корабли
             enemy_name=opponent.name,
             enemy_grid=current.opponent_grid,  # тут корабли СКРЫТЫ
-            is_my_turn=True,
         )
 
     def on_cell_click(self, row, col):
-        result = self.game.make_shot(row, col) # выстрел без передачи хода
-        if result != ShotResult.ALREADY_SHOT:
-            self._refresh_game_screen()
-        pass
+        if self.is_waiting_for_turn_end or self.is_waiting_for_ai:
+            return
+        if self.game is None or self.game.is_over:
+            return
+
+        outcome = self.game.make_shot(row, col)
+        if outcome is None:
+            return
+        if outcome["result"] in (ShotResult.ALREADY_SHOT, ShotResult.INVALID):
+            return
+
+        self.is_waiting_for_turn_end = True
+        self._refresh_game_screen() # первый игрок видит результат выстрела
+        self.main_window.root.after(300, lambda: self._finish_turn(outcome))
+
+    def _finish_turn(self, outcome):
+        """Вызывается через after — здесь уже безопасно менять ход и перерисовывать."""
+        self.game.end_turn(outcome)
+
+        if self.game.is_over:
+            self.main_window.show_game_over(self.game.winner.name)
+            self.is_waiting_for_turn_end = False
+            return
+
+        self._refresh_game_screen() # нужно, чтобы второй игрок теперь видел свое поле
+        self.is_waiting_for_turn_end = False
+
+        if self.is_with_ai and self.game.current_player.name == "Компьютер":
+            self._ai_turn()
+
+    def _ai_turn(self):
+        if self.game is None or self.game.is_over:
+            return
+
+        # Небольшая задержка, чтобы игрок увидел, что произошло
+        self.main_window.root.after(300, self._ai_make_one_shot)
+
+    def _ai_make_one_shot(self):
+        self.is_waiting_for_ai = True
+
+        ai = self.game.current_player
+        if ai.name != "Компьютер":
+            self.is_waiting_for_ai = False
+            return  # ход уже не у AI (например, промахнулся и передал ход)
+
+        outcome = self.game.make_shot()
+        self.game.end_turn(outcome)
+        if self.game.is_over:
+            self.main_window.show_game_over(self.game.winner.name)
+            self.is_waiting_for_ai = False
+            return
+
+        self._refresh_game_screen()
+        self.main_window.root.after(300, self._ai_make_one_shot)
+
 
     def on_exit(self):
         """Обработчик закрытия приложения"""
@@ -68,3 +124,9 @@ class GameController:
     def on_click(self, x, y):
         """Заглушка для обработки кликов (пока не используется)"""
         print(f"Клик по координатам: ({x}, {y})")
+
+    def reset_game(self):
+        """Полный сброс текущей партии."""
+        self.game = None
+        self.is_waiting_for_turn_end = False
+        self.is_waiting_for_ai = False

@@ -118,7 +118,7 @@ class MainWindow:
         )
         exit_button.pack(pady=20)
 
-    def show_game_screen(self, own_name, own_grid, enemy_name, enemy_grid, is_my_turn=True):
+    def show_game_screen(self, own_name, own_grid, enemy_name, enemy_grid):
         self.clear_content()
 
         # Заголовок с именами
@@ -143,6 +143,65 @@ class MainWindow:
             bg=BACKGROUND_COLOR,
         )
         self.enemy_board.pack(side="left", padx=20)
+
+    def show_game_over(self, winner_name):
+        """Экран победы. winner_name — имя победителя."""
+        self.clear_content()
+
+        # Контейнер по центру
+        center = tk.Frame(self.content_frame, bg=BACKGROUND_COLOR)
+        center.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Заголовок
+        title_label = tk.Label(
+            center,
+            text="Игра окончена",
+            font=("Arial", 24, "bold"),
+            bg=BACKGROUND_COLOR
+        )
+        title_label.pack(pady=20)
+
+        # Имя победителя
+        winner_label = tk.Label(
+            center,
+            text=f"Победил: {winner_name}",
+            font=("Arial", 18, "bold"),
+            fg="#2a7a2a",  # зелёный, чтобы выделялось
+            bg=BACKGROUND_COLOR
+        )
+        winner_label.pack(pady=10)
+
+        # Кнопка «Новая игра» — перезапуск с тем же режимом
+        new_game_button = tk.Button(
+            center,
+            text="Новая игра",
+            command=self._restart_game,
+            font=("Arial", 12),
+            width=20
+        )
+        new_game_button.pack(pady=10)
+
+        # Кнопка «В меню»
+        menu_button = tk.Button(
+            center,
+            text="В меню",
+            command=self._back_to_menu,
+            font=("Arial", 12),
+            width=20
+        )
+        menu_button.pack(pady=10)
+
+    def _restart_game(self):
+        """Перезапуск с тем же режимом (человек/AI)."""
+        if self.controller.is_with_ai:
+            self.controller.start_game_vs_ai()
+        else:
+            self.controller.start_game_vs_human()
+
+    def _back_to_menu(self):
+        """Возврат в меню + сброс игры в контроллере."""
+        self.controller.reset_game()
+        self.start_menu_widgets()
 
     def clear_content(self):
         """Очищает текущий фрейм"""

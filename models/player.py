@@ -1,5 +1,6 @@
 from models.grid import Grid, ShotResult
 import random
+from models.grid import CellState
 
 
 class Player:
