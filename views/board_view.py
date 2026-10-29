@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from models.grid import CellState
+from config import *
 
 
 class BoardView(tk.Frame):
@@ -10,9 +11,8 @@ class BoardView(tk.Frame):
           'enemy' — корабли скрыты, видны только результаты выстрелов
     """
 
-    CELL_SIZE = 40
 
-    def __init__(self, parent, grid, mode="own", on_cell_click=None, bg="#ffffff"):
+    def __init__(self, parent, grid, mode="own", on_cell_click=None, bg=WHITE):
         super().__init__(parent, bg=bg)
         self.grid = grid
         self.mode = mode
@@ -22,9 +22,9 @@ class BoardView(tk.Frame):
     def _build(self):
         self.canvas = tk.Canvas(
             self,
-            width=self.grid.size * self.CELL_SIZE,
-            height=self.grid.size * self.CELL_SIZE,
-            bg="#d0e8ff",          # цвет «воды»
+            width=self.grid.size * CELL_SIZE,
+            height=self.grid.size * CELL_SIZE,
+            bg=WATER_COLOR,          # цвет «воды»
             highlightthickness=0,
         )
         self.canvas.pack()
@@ -36,12 +36,12 @@ class BoardView(tk.Frame):
     def _draw_grid(self):
         n = self.grid.size
         for i in range(n + 1):
-            x = i * self.CELL_SIZE
-            self.canvas.create_line(x, 0, x, n * self.CELL_SIZE, fill="#555")
-            self.canvas.create_line(0, x, n * self.CELL_SIZE, x, fill="#555")
+            x = i * CELL_SIZE
+            self.canvas.create_line(x, 0, x, n * CELL_SIZE, fill=GRID_LINE_COLOR)
+            self.canvas.create_line(0, x, n * CELL_SIZE, x, fill=GRID_LINE_COLOR)
 
     def _draw_state(self):
-        """Рисует корабли (если mode='own') и результаты выстрелов."""
+        """Рисует корабли (если mode='own') и результаты выстрелов"""
         n = self.grid.size
         for row in range(n):
             for col in range(n):
@@ -51,38 +51,37 @@ class BoardView(tk.Frame):
                 self._draw_cell(row, col, cell)
 
     def _draw_cell(self, row, col, cell_state):
-        x0 = col * self.CELL_SIZE
-        y0 = row * self.CELL_SIZE
-        x1 = x0 + self.CELL_SIZE
-        y1 = y0 + self.CELL_SIZE
+        x0 = col * CELL_SIZE
+        y0 = row * CELL_SIZE
+        x1 = x0 + CELL_SIZE
+        y1 = y0 + CELL_SIZE
 
-        # Здесь маппинг CellState -> цвет. Подставьте свои значения.
-        # Пример (зависит от вашего grid.py):
+        # Здесь маппинг CellState -> цвет.
         #   SHIP (корабль)      -> тёмно-серый, только в mode='own'
         #   MISS (промах)       -> белый кружок
         #   HIT (попадание)     -> красный
         #   DESTROYED (убит)    -> тёмно-красный
         if cell_state == CellState.SHIP:
             if self.mode == "own":
-                self.canvas.create_rectangle(x0+2, y0+2, x1-2, y1-2, fill="#444")
+                self.canvas.create_rectangle(x0+2, y0+2, x1-2, y1-2, fill=SHIP_COLOR)
             # в mode='enemy' корабль не рисуем — враг не должен его видеть
         elif cell_state == CellState.MISS:
             cx, cy = (x0+x1)/2, (y0+y1)/2
-            r = self.CELL_SIZE * 0.15
-            self.canvas.create_oval(cx-r, cy-r, cx+r, cy+r, fill="#888", outline="")
+            r = CELL_SIZE * 0.15
+            self.canvas.create_oval(cx-r, cy-r, cx+r, cy+r, fill=MISS_COLOR, outline="")
         elif cell_state == CellState.HIT:
-            self.canvas.create_rectangle(x0+2, y0+2, x1-2, y1-2, fill="#ff5555")
+            self.canvas.create_rectangle(x0+2, y0+2, x1-2, y1-2, fill=HIT_COLOR)
         elif cell_state == CellState.DESTROYED:
-            self.canvas.create_rectangle(x0+2, y0+2, x1-2, y1-2, fill="#aa0000")
+            self.canvas.create_rectangle(x0+2, y0+2, x1-2, y1-2, fill=DESTROYED_COLOR)
 
     def _on_click(self, event):
-        col = event.x // self.CELL_SIZE
-        row = event.y // self.CELL_SIZE
+        col = event.x // CELL_SIZE
+        row = event.y // CELL_SIZE
         if 0 <= row < self.grid.size and 0 <= col < self.grid.size:
             self.on_cell_click(row, col)
 
     def refresh(self):
-        """Перерисовать состояние (после выстрела)."""
+        """Перерисовать состояние (после выстрела)"""
         self.canvas.delete("all")
         self._draw_grid()
         self._draw_state()

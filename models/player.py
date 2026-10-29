@@ -1,14 +1,13 @@
-from models.grid import Grid, ShotResult
+from models.grid import *
 import random
-from models.grid import CellState
 
 
 class Player:
     """Базовый класс игрока"""
 
-    def __init__(self, name, grid_size=10):
+    def __init__(self, name, grid=None):
         self.name = name
-        self.grid = Grid(grid_size)
+        self.grid = grid if grid is not None else Grid(10)
         self.opponent_grid = None  # Ссылка на сетку противника (для AI)
 
     def set_opponent_grid(self, opponent_grid):
@@ -64,8 +63,8 @@ class Player:
 class HumanPlayer(Player):
     """Класс игрока-человека"""
 
-    def __init__(self, name, grid_size=10):
-        super().__init__(name, grid_size)
+    def __init__(self, name, grid=None):
+        super().__init__(name, grid)
 
     def make_shot(self, row, col):
         """Человек делает выстрел по указанным координатам"""
@@ -75,8 +74,8 @@ class HumanPlayer(Player):
 class AIPlayer(Player):
     """Класс компьютерного противника"""
 
-    def __init__(self, name, grid_size=10, strategy="random"):
-        super().__init__(name, grid_size)
+    def __init__(self, name, grid=None, strategy="random"):
+        super().__init__(name, grid)
         self.strategy = strategy
         self.last_hit = None  # Последнее попадание (для умной стратегии)
         self.hunting_mode = False  # Режим охоты (после попадания)

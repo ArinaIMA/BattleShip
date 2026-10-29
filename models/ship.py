@@ -23,6 +23,9 @@ class Ship:
         """Вернуть координаты всех клеток корабля"""
         return self._coords
 
+    def get_size(self):
+        return self._size
+
     def is_sunk(self):
         """Проверка: потанул ли корабль?"""
         return self._hits_count >= self._size

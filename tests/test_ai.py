@@ -14,13 +14,8 @@ class TestAi:
 
         p1 = AIPlayer("Умник", strategy="smart")
         p2 = AIPlayer("Глупыш", strategy="silly")
-        ships_config = [
-            {'size': 4, 'count': 1},
-            {'size': 3, 'count': 2},
-            {'size': 2, 'count': 3},
-            {'size': 1, 'count': 4},
-        ]
-        gc._start_game(p1, p2, ships_config)
+
+        gc._start_game(p1, p2)
 
         while not gc.game.is_over:
             outcome = gc.game.make_shot()

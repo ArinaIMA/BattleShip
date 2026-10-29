@@ -3,7 +3,7 @@ from models.grid import ShotResult
 
 
 class Game:
-    """Модель одной партии. Правила, состояние, победа."""
+    """Модель одной партии. Правила, состояние, победа"""
 
     def __init__(self, player1, player2, ships_config):
         self.player1 = player1
@@ -43,7 +43,7 @@ class Game:
         }
 
     def end_turn(self, outcome):
-        """Фиксирует последствия выстрела: смена хода, победа."""
+        """Фиксирует последствия выстрела: смена хода, победа"""
         result = outcome["result"]
         if result in (ShotResult.ALREADY_SHOT, ShotResult.INVALID):
             return

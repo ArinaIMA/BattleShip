@@ -1,6 +1,7 @@
 from models.player import HumanPlayer, AIPlayer, Player
 from models.game import Game
 from models.grid import ShotResult
+from controllers.placement_controller import PlacementController
 
 class GameController:
     def __init__(self):
@@ -9,40 +10,38 @@ class GameController:
         self.is_with_ai = False
         self.is_waiting_for_turn_end = False
         self.is_waiting_for_ai = False
+        self._placement = None
+
+        self.ships_config = [
+            {'size': 4, 'count': 1},
+            {'size': 3, 'count': 2},
+            {'size': 2, 'count': 3},
+            {'size': 1, 'count': 4},
+        ]
 
     def set_main_window(self, window):
         """Связываем контроллер с окном"""
         self.main_window = window
 
+
     def start_game_vs_human(self):
         self.is_with_ai = False
-        p1 = HumanPlayer("Игрок 1")
-        p2 = HumanPlayer("Игрок 2")
-        ships_config = [
-            {'size': 4, 'count': 1},
-            {'size': 3, 'count': 2},
-            {'size': 2, 'count': 3},
-            {'size': 1, 'count': 4},
-        ]
-        self._start_game(p1, p2, ships_config)
+        self._start_placement(is_with_ai=False)
 
     def start_game_vs_ai(self):
         self.is_with_ai = True
-        p1 = HumanPlayer("Игрок 1")
-        p2 = AIPlayer("Компьютер", strategy="smart")
-        ships_config = [
-            {'size': 4, 'count': 1},
-            {'size': 3, 'count': 2},
-            {'size': 2, 'count': 3},
-            {'size': 1, 'count': 4},
-        ]
-        self._start_game(p1, p2, ships_config)
+        self._start_placement(is_with_ai=True)
 
-    def _start_game(self, p1, p2, ships_config):
-        self.game = Game(p1, p2, ships_config)
+    def _start_placement(self, is_with_ai):
+        self._placement = PlacementController(self.main_window, self)
+        self._placement.start(
+            ships_config=self.ships_config,
+            is_with_ai=is_with_ai,
+            on_complete=self._start_game,
+        )
 
-        # Расстановка
-        self._place_ships()
+    def _start_game(self, p1, p2):
+        self.game = Game(p1, p2, self.ships_config)
 
         # Переход к экрану игры
         if not self.is_with_ai:
