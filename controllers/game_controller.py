@@ -16,22 +16,29 @@ class GameController:
 
     def start_game_vs_human(self):
         self.is_with_ai = False
-        self._start_game()
-
-    def start_game_vs_ai(self):
-        self.is_with_ai = True
-        self._start_game()
-
-    def _start_game(self):
         p1 = HumanPlayer("Игрок 1")
-        p2 = HumanPlayer("Игрок 2") if not self.is_with_ai else AIPlayer("Компьютер", strategy="smart")
-
+        p2 = HumanPlayer("Игрок 2")
         ships_config = [
             {'size': 4, 'count': 1},
             {'size': 3, 'count': 2},
             {'size': 2, 'count': 3},
             {'size': 1, 'count': 4},
         ]
+        self._start_game(p1, p2, ships_config)
+
+    def start_game_vs_ai(self):
+        self.is_with_ai = True
+        p1 = HumanPlayer("Игрок 1")
+        p2 = AIPlayer("Компьютер", strategy="smart")
+        ships_config = [
+            {'size': 4, 'count': 1},
+            {'size': 3, 'count': 2},
+            {'size': 2, 'count': 3},
+            {'size': 1, 'count': 4},
+        ]
+        self._start_game(p1, p2, ships_config)
+
+    def _start_game(self, p1, p2, ships_config):
         self.game = Game(p1, p2, ships_config)
 
         # Расстановка
@@ -121,7 +128,7 @@ class GameController:
         self.is_waiting_for_ai = True
 
         ai = self.game.current_player
-        if ai.name != "Компьютер":
+        if type(ai) is not AIPlayer:
             self.is_waiting_for_ai = False
             return  # ход уже не у AI (например, промахнулся и передал ход)
 
